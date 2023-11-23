@@ -15,31 +15,47 @@ namespace API_Batya.Controllers
         };
         // GET: api/<EventsController>
         [HttpGet]
-        public IEnumerable<Event> Get() => events;
+        public IActionResult Get() => Ok(events);
 
         // GET api/<EventsController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id) => "value";
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var e = events.Find(e => e.Id == id);
+            if (e == null)
+                return NotFound();
+            return Ok(e);
+        }
 
         // POST api/<EventsController>
         [HttpPost]
-        public void Post([FromBody] Event value) => events.Add(new Event(value.Title, value.Start, value.End));
+        public IActionResult Post([FromBody] Event value)
+        {
+            events.Add(new Event(value.Title, value.Start, value.End));
+            return NoContent();
+        }
 
         // PUT api/<EventsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Event value)
+        public IActionResult Put(int id, [FromBody] Event value)
         {
             var e = events.Find(e => e.Id == id);
-            if (e != null)
-            {
-                e.Title = value.Title;
-                e.Start = value.Start;
-                e.End = value.End;
-            }
+            if (e == null)
+                return NotFound();
+            events.Remove(e);
+            events.Add(value);
+            return Created("succedded with apdate the value", value);
         }
 
         // DELETE api/<EventsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id) => events.Remove(events.Find(e => e.Id == id));
+        public IActionResult Delete(int id)
+        {
+            var e = events.Find(e => e.Id == id);
+            if (e == null)
+                return NotFound();
+            events.Remove(e);
+            return NoContent();
+        }
     }
 }
