@@ -8,20 +8,22 @@ namespace API_Batya.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {
-        static List<Event> events = new List<Event>()        {
-            new Event("Rosh Hashana",  /*new DateTime(2023, 09, 16)*/new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day) , new DateTime(2023, 09, 16)),
-            new Event("יום כיפור",new DateTime(2023, 09, 25), new DateTime(2023, 09, 26)),
-            new Event("יוט ראשון של סוכות", new DateTime(2023, 09, 29), new DateTime(2023, 09, 30))
-        };
+        private readonly IDataContext _context;
+
+        public EventsController(IDataContext dataContext)
+        {
+            _context = dataContext;
+        }
+
         // GET: api/<EventsController>
         [HttpGet]
-        public IActionResult Get() => Ok(events);
+        public IActionResult Get() => Ok(_context.Events);
 
         // GET api/<EventsController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var e = events.Find(e => e.Id == id);
+            var e = _context.Events.Find(e => e.Id == id);
             if (e == null)
                 return NotFound();
             return Ok(e);
@@ -31,7 +33,7 @@ namespace API_Batya.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Event value)
         {
-            events.Add(new Event(value.Title, value.Start, value.End));
+            _context.Events.Add(new Event(value.Title, value.Start, value.End));
             return NoContent();
         }
 
@@ -39,11 +41,11 @@ namespace API_Batya.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Event value)
         {
-            var e = events.Find(e => e.Id == id);
+            var e = _context.Events.Find(e => e.Id == id);
             if (e == null)
                 return NotFound();
-            events.Remove(e);
-            events.Add(value);
+            _context.Events.Remove(e);
+            _context.Events.Add(value);
             return Created("succedded with apdate the value", value);
         }
 
@@ -51,10 +53,10 @@ namespace API_Batya.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var e = events.Find(e => e.Id == id);
+            var e = _context.Events.Find(e => e.Id == id);
             if (e == null)
                 return NotFound();
-            events.Remove(e);
+            _context.Events.Remove(e);
             return NoContent();
         }
     }

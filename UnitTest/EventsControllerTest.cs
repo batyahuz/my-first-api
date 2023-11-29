@@ -6,6 +6,14 @@ namespace UnitTests
 {
     public class EventsControllerTest
     {
+        private readonly EventsController _eventsController;
+
+        public EventsControllerTest()
+        {
+            var context = new DataContextFake();
+            _eventsController = new EventsController(context);
+        }
+
         [Fact]
         public void Get_ReturnOk()
         {
@@ -13,8 +21,7 @@ namespace UnitTests
             //Arrange - ארגון הנתונים הנדרשים להפעלת הפונקציה הנבדקת
             //Act - הפעלת הפונקציה הנבדקת
             //Asser - הכרזה מה התוצאה הרצויה
-            var controller = new EventsController();
-            var result = controller.Get();
+            var result = _eventsController.Get();
             Assert.IsType<OkObjectResult>(result);
         }
 
@@ -22,8 +29,7 @@ namespace UnitTests
         public void GetById_ReturnOk()
         {
             var id = 1;
-            var controller = new EventsController();
-            var result = controller.Get(id);
+            var result = _eventsController.Get(id);
             Assert.IsType<OkObjectResult>(result);
         }
 
@@ -31,9 +37,8 @@ namespace UnitTests
         public void Post_ReturnNoContent()
         {
             var e = new Event("a title", DateTime.Now, DateTime.Now);
-            var controller = new EventsController();
-            var result = controller.Post(e);
-            Assert.IsType<OkObjectResult>(result);
+            var result = _eventsController.Post(e);
+            Assert.IsType<NoContentResult>(result);
 
         }
 
@@ -41,19 +46,17 @@ namespace UnitTests
         public void Put_ReturnCreated()
         {
             var e = new Event("a title", DateTime.Now, DateTime.Now);
-            var id = 1;
-            var controller = new EventsController();
-            var result = controller.Put(id, e);
-            Assert.IsType<OkObjectResult>(result);
+            var id = 2;
+            var result = _eventsController.Put(id, e);
+            Assert.IsType<CreatedResult>(result);
         }
 
         [Fact]
         public void Delete_ReturnNotFound()
         {
             var id = 100;
-            var controller = new EventsController();
-            var result = controller.Delete(id);
-            Assert.IsType<OkObjectResult>(result);
+            var result = _eventsController.Delete(id);
+            Assert.IsType<NotFoundResult>(result);
         }
     }
 }
