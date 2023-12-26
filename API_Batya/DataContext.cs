@@ -1,19 +1,16 @@
 ﻿using CsvHelper;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace API_Batya
 {
-    public class DataContext : IDataContext
+    public class DataContext : DbContext
     {
-        public List<Event> Events { get; set; }
+        public DbSet<Event> Events { get; set; }
 
-        public DataContext()
+        protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            using (var reader = new StreamReader("data.csv"))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                Events = csv.GetRecords<Event>().ToList();
-            }
+            optionBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=sample_db");
         }
     }
 }

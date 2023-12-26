@@ -8,7 +8,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IDataContext, DataContext>();
+builder.Services.AddDbContext<DataContext>();
+//builder.Services.AddSingleton<IDataContext, DataContext>();
 
 #region מה שהוספתי
 builder.Services.AddCors(o => o.AddPolicy("APolicy", p =>
